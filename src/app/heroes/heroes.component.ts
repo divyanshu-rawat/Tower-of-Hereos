@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {Hero} from '../hero';
 import { FormsModule } from '@angular/forms';
-import {HEROES} from '../mock-heroes';
+import { HeroService } from '../hero.service';
+import {MessageService} from '../message.service';
 
 
 @Component({
@@ -14,13 +15,22 @@ import {HEROES} from '../mock-heroes';
 
 export class HeroesComponent implements OnInit {
 
-  constructor() { }
+  constructor(private heroService: HeroService, private messageService: MessageService) { }
 
   ngOnInit() {
+    this.getHeroes();
   }
 
+  getHeroes(): void {
+    this.heroService.getHeroes().subscribe(response =>{ 
 
-  Heroes = HEROES;
+      this.messageService.add_message('HeroService: fetched heroes');
+      this.heroes =  response;
+
+    });
+  }
+
+  heroes: Hero[]
 
   selectedHero : Hero;
   onSelect(hero: Hero): void {
