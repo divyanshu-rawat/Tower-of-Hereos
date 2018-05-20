@@ -43,6 +43,9 @@ private handleError<T> (operation = 'operation', result?: T) {
   };
 }
 
+ private httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
 
   getHeroes() : Observable<Hero[]>{
   	// this.messageService.add_message('HeroService: fetched heroes');
@@ -65,8 +68,24 @@ private handleError<T> (operation = 'operation', result?: T) {
   }
 
   updateHero(hero:Hero):Observable<any>{
-    this.http.put(this.heroesUrl,hero,httpOptions).pipe(tap(() => { log(`updated hero id=${hero.id}`) }),catchError(function(){}))
+
+    return this.http.put(this.heroesUrl,hero,this.httpOptions)
+    .pipe(
+       tap(() => { this.log(`updated hero id=${hero.id}`) })
+      ,catchError(this.handleError<any>('updateHero'))
+      )
   }
+
+ /** POST: add a new hero to the server */
+addHero (hero: Hero): Observable<Hero> {
+
+
+  console.log("chuchu", hero);
+  return this.http.post<Hero>(this.heroesUrl, hero, this.httpOptions).pipe(
+    tap((hero: Hero) => this.log(`added hero w/ id=${hero.id}`)),
+    catchError(this.handleError<Hero>('addHero'))
+  );
+}
 
 }
 
