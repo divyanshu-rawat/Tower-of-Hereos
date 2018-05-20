@@ -44,10 +44,19 @@ export class HeroesComponent implements OnInit {
     this.location.back();
   }
 
+  deleteHero(hero:Hero):void{
+    this.heroService.delHero(hero).subscribe(_ =>{
+      this.heroes = this.heroes.filter( _hero => {
+          return _hero!= hero;
+      })
+    })
+  }
+
   data:string;
 
   heroes: Hero[]
 
 }
 
+// If you neglect to subscribe(), the service will not send the delete request to the server! As a rule, an Observable does nothing until something subscribes!
 
